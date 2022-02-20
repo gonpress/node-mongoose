@@ -1,7 +1,8 @@
 import express from 'express'
+import asyncHandler from 'express-async-handler'
+import productModel from "../models/productModel.js";
 
 const router = express.Router();
-
 
 // Product를 불러오는 API
 router.get('/', (req,res) => {
@@ -12,18 +13,19 @@ router.get('/', (req,res) => {
 })
 
 // Product를 등록하는 API
-router.post('/', (req, res) => {
-    const userData = {
+router.post('/', asyncHandler( async (req, res) => {
+
+    const newProduct = new productModel({
         name: req.body.name,
         price: req.body.price,
+        brand: req.body.brand,
         desc: req.body.description,
-    }
+    });
 
-    res.json({
-        msg: '프로덕트 등록 됨',
-        product: userData,
-    })
-})
+    const createdProduct = await newProduct.save();
+
+    res.json(createdProduct);
+}));
 
 
 // Product를 수정하는 API
