@@ -1,0 +1,22 @@
+{
+  "name": "nodetutorial",
+  "version": "1.0.0",
+  "description": "nodetutorial",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gonpress/nodetutorial.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gonpress/nodetutorial/issues"
+  },
+  "homepage": "https://github.com/gonpress/nodetutorial#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
