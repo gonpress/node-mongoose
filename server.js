@@ -1,15 +1,21 @@
-import express from 'express'
-import morgan from 'morgan'
+import express from 'express';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
 import bodyParser from "body-parser";
+import connectDB from "./config/db.js";
 
 // Router
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 
+
 // ES5 문법
 // const express = require("express")
-const app = express()
+const app = express();
 
+dotenv.config();
+
+connectDB();
 
 // 설정
 //morgan은 로그
@@ -26,5 +32,6 @@ app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 
 
-const PORT = 9999;
+const PORT = process.env.PORT || 8888;
+
 app.listen(PORT, console.log("SERVER STARTED"))

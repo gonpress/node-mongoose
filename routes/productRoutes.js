@@ -13,7 +13,6 @@ router.get('/', (req,res) => {
 
 // Product를 등록하는 API
 router.post('/', (req, res) => {
-    
     const userData = {
         name: req.body.name,
         price: req.body.price,
