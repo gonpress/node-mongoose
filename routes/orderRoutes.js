@@ -1,29 +1,38 @@
+
+// 1
 import express from 'express';
+import asyncHandler from 'express-async-handler';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({
-        msg: 'order 불러오기'
-    })
-})
 
-router.post('/', (req, res) => {
-    res.json({
-        msg: 'order 등록'
-    })
-})
+// 3
+// CRUD
+router.get('/', asyncHandler(async(req,res)=> {
+    res.json({msg:'order'});
+}))
 
-router.put('/', (req, res) => {
-    res.json({
-        msg: 'order 수정'
-    })
-})
+router.get('/:id', asyncHandler(async(req, res) => {
 
-router.delete('/', (req, res) => {
-    res.json({
-        msg: 'order 삭제'
-    })
-})
+}))
 
+router.post('/', asyncHandler(async(req,res)=> {
+
+}))
+
+router.put('/:id', asyncHandler(async(req,res)=>{
+
+}))
+
+router.delete('/', asyncHandler(async(req,res)=> {
+
+}))
+
+router.delete('/:id', asyncHandler(async(req,res)=>{
+
+}))
+
+
+
+// 2
 export default router;

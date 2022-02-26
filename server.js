@@ -7,14 +7,13 @@ import connectDB from "./config/db.js";
 // Router
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-
+// import {productRoutes, orderRoutes} from './routes';
 
 // ES5 문법
 // const express = require("express")
 const app = express();
 
 dotenv.config();
-
 connectDB();
 
 // 설정
@@ -29,7 +28,7 @@ app.get("/", (req, res) => {
 })
 
 app.use('/products', productRoutes);
-app.use('/orders', orderRoutes);
+app.use('/order', orderRoutes);
 
 
 const PORT = process.env.PORT || 8888;

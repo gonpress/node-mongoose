@@ -19,7 +19,6 @@ router.get('/', asyncHandler( async (req,res) => {
                 desc: product.desc,
             }
         ))
-
     });
 }));
 
