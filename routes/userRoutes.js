@@ -1,8 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import userModel from "../models/userModel.js";
-import bcrypt from 'bcryptjs';
-import gravatar from 'gravatar';
 
 const router = express.Router();
 
@@ -17,24 +15,10 @@ router.post('/register', asyncHandler(async(req, res)=> {
         })
     }
 
-    // password 암호화
-    const salt = await bcrypt.genSalt(10);
-    const passwordHashed = await bcrypt.hash(password, salt);
-
-
-    // 프로필 이미지 자동생성
-    const avatar = await gravatar.url(email, {
-        protocol:'https',
-        s:'200',
-        r:'pg',
-        d:'mm'
-    })
-
     const user = new userModel({
         name,
         email,
-        password:passwordHashed,
-        profileImg:avatar
+        password,
     });
 
     const createdUser = await user.save();

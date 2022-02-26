@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import gravatar from "gravatar";
 
 const userSchema = mongoose.Schema(
     {
@@ -29,7 +31,24 @@ const userSchema = mongoose.Schema(
     }
 );
 
+userSchema.pre('save', async function(next) {
+    // password 암호화
+    if(!this.isModified('password')){
+        next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 
+    // 프로필 이미지 (아바타) 생성
+    const avatar = await gravatar.url(this.email, {
+        protocol : 'https',
+        s:'200',
+        r:'pg',
+        d:'mm'
+    })
+
+    this.profileImg = avatar;
+})
 
 const User = mongoose.model('User', userSchema);
 export default User;
