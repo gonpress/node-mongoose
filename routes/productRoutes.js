@@ -17,6 +17,7 @@ router.get('/', asyncHandler( async (req,res) => {
                 price: product.price,
                 brand: product.brand,
                 desc: product.desc,
+                countInStock:product.countInStock,
             }
         ))
     });
