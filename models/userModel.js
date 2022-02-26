@@ -31,6 +31,12 @@ const userSchema = mongoose.Schema(
     }
 );
 
+// password 매칭 함수
+userSchema.methods.matchPassword = async function(enteredPassword){
+    return await bcrypt.compare(enteredPassword, this.password);
+}
+
+// password 암호화 / avatar 자동생성
 userSchema.pre('save', async function(next) {
     // password 암호화
     if(!this.isModified('password')){
