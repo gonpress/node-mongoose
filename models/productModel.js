@@ -23,6 +23,9 @@ const productSchema = mongoose.Schema(
         desc: {
             type: String,
         },
+        img:{
+            type:String,
+        }
     },
     {
         timestamps: true,

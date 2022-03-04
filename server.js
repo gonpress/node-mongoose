@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import bodyParser from "body-parser";
 import connectDB from "./config/db.js";
+import cors from 'cors';
 
 // Router
 import productRoutes from "./routes/productRoutes.js";
@@ -21,6 +22,7 @@ connectDB();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cors('localhost'));
 
 app.get("/", (req, res) => {
     res.send("api running");
@@ -32,4 +34,4 @@ app.use('/user', userRoutes);
 
 const PORT = process.env.PORT || 8888;
 
-app.listen(PORT, console.log("SERVER STARTED"))
+app.listen(PORT, console.log("SERVER STARTED", PORT))

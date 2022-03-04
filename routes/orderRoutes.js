@@ -98,7 +98,7 @@ router.put('/:id', asyncHandler(async(req,res)=>{
         order.shippingPrice = shippingPrice;
         order.totalPrice = totalPrice;
     }else{
-        return req.status(404).json({
+        return res.status(404).json({
             msg:'수정할 order 없음',
         });
     }

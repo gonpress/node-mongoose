@@ -14,8 +14,9 @@ router.get('/', asyncHandler( async (req,res) => {
             {
                 id: product._id,
                 name: product.name,
-                price: product.price,
+                price: product.price.toLocaleString(),
                 brand: product.brand,
+                img:product.img,
                 desc: product.desc,
                 countInStock:product.countInStock,
             }
@@ -29,6 +30,9 @@ router.get('/:id', asyncHandler( async (req, res) => {
     const productId = req.params.id;
     const product = await productModel.findById(productId);
     if(product){
+        const pr = product.price.toLocaleString();
+        product.price = pr;
+        console.log(pr);
         res.json(product);
     }else{
         res.status(404).json({
@@ -39,14 +43,14 @@ router.get('/:id', asyncHandler( async (req, res) => {
 
 // Product를 등록하는 API
 router.post('/', asyncHandler( async (req, res) => {
-
     const {name, price, brand, description} = req.body;
-
+    const imageNumber = Math.floor(Math.random() * (500 - 1) + 1);
     const newProduct = new productModel({
         name,
         price,
         brand,
         desc:description,
+        img:`https://picsum.photos/200/200/?image=${imageNumber}`,
     });
 
     const createdProduct = await newProduct.save();
