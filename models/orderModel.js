@@ -5,11 +5,11 @@ import mongoose from 'mongoose';
 const orderSchema = mongoose.Schema(
     //4
     {
-        // user:{
-        //     type:mongoose.Schema.Types.ObjectId,
-        //     required:true,
-        //     ref: 'User',
-        // },
+        user:{
+            type:mongoose.Schema.Types.ObjectId,
+            required:true,
+            ref: 'User',
+        },
         product:{
             type:mongoose.Schema.Types.ObjectId,
             required:true,

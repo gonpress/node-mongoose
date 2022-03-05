@@ -1,6 +1,7 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import productModel from "../models/productModel.js";
+import {protect, admin} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.get('/', asyncHandler( async (req,res) => {
 }));
 
 // 특정 Product를 불러오는 API
-router.get('/:id', asyncHandler( async (req, res) => {
+router.get('/:id', protect, asyncHandler( async (req, res) => {
 
     const productId = req.params.id;
     const product = await productModel.findById(productId);
@@ -42,7 +43,7 @@ router.get('/:id', asyncHandler( async (req, res) => {
 }))
 
 // Product를 등록하는 API
-router.post('/', asyncHandler( async (req, res) => {
+router.post('/', protect, admin, asyncHandler( async (req, res) => {
     const {name, price, brand, description} = req.body;
     // const imageNumber = Math.floor(Math.random() * (500 - 1) + 1);
     const newProduct = new productModel({
@@ -59,7 +60,7 @@ router.post('/', asyncHandler( async (req, res) => {
 }));
 
 // Product를 수정하는 API
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', protect, admin, asyncHandler(async (req, res) => {
     const {id} = req.params;
 
     const {name, price, brand, desc} = req.body;
@@ -89,7 +90,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
 }));
 
 // Product 전체를 삭제하는 API
-router.delete('/', asyncHandler( async (req, res) => {
+router.delete('/', protect, admin, asyncHandler( async (req, res) => {
     await productModel.deleteMany({});
     res.json({
         msg: '프로덕트 삭제 됨',
@@ -97,7 +98,7 @@ router.delete('/', asyncHandler( async (req, res) => {
 }));
 
 // 특정 Product를 삭제하는 API
-router.delete('/:id', asyncHandler( async (req, res) => {
+router.delete('/:id', protect, admin, asyncHandler( async (req, res) => {
     const productId = req.params.id;
 
     const product = await productModel.findById(productId);

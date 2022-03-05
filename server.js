@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import bodyParser from "body-parser";
 import connectDB from "./config/db.js";
 import cors from 'cors';
-
+import {notFound, errorHandler} from "./middleware/errorMiddleware.js";
 // Router
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
@@ -31,6 +31,10 @@ app.get("/", (req, res) => {
 app.use('/products', productRoutes);
 app.use('/order', orderRoutes);
 app.use('/user', userRoutes);
+
+// error handler
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8888;
 

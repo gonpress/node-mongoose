@@ -12,14 +12,24 @@ const router = express.Router();
 router.get('/', protect, admin, asyncHandler(async(req, res)=>{
     const users = await userModel.find();
 
-    if(users){
-        res.json({
-            count:users.length,
-            users,
-        })
-    } else{
-        res.status(404).json({msg:'user not found'});
+    if(!users){
+        res.status(401);
+        throw new Error('User not found');
     }
+
+    res.json({
+        count:users.length,
+        users,
+    })
+
+    // if(users){
+    //     res.json({
+    //         count:users.length,
+    //         users,
+    //     })
+    // } else{
+    //     res.status(404).json({msg:'user not found'});
+    // }
 }))
 
 // 회원가입 API
@@ -27,22 +37,31 @@ router.post('/register', asyncHandler(async(req, res)=> {
     const {name, email, password} = req.body;
     const userExists = await userModel.findOne({email})
     if(userExists) {
-        return res.status(404).json({
-            msg:'User already exists',
-        })
+        // return res.status(404).json({
+        //     msg:'User already exists',
+        // })
+        res.status(400)
+        throw new Error('User already exists');
     }
 
-    const user = new userModel({
+    const user = await new userModel.create({
         name,
         email,
         password,
     });
 
-    const createdUser = await user.save();
-    res.json({
-        msg:'유저 생성 완료',
-        userInfo:createdUser,
-    })
+    if(user){
+        res.json(user);
+    } else{
+        res.status(400)
+        throw new Error('Invalid user data');
+    }
+
+    // const createdUser = await user.save();
+    // res.json({
+    //     msg:'유저 생성 완료',
+    //     userInfo:createdUser,
+    // })
 }))
 
 // 로그인 API
@@ -56,9 +75,11 @@ router.post('/login', asyncHandler(async(req, res) => {
             token: generateToken(user._id)
         });
     }else{
-        res.status(404).json({
-            msg:'Invalid email or password'
-        })
+        // res.status(404).json({
+        //     msg:'Invalid email or password'
+        // })
+        res.status(401);
+        throw new Error('Invalid email or password');
     }
 }))
 
@@ -72,7 +93,9 @@ router.get('/profile', protect, asyncHandler(async(req, res) => {
             name:user.name,
         });
     }else{
-        res.status(404).json({msg:'User not found'});
+        // res.status(404).json({msg:'User not found'});
+        res.status(404);
+        throw new Error('User not found');
     }
 }))
 
@@ -84,7 +107,9 @@ router.delete('/delete', protect, asyncHandler(async(req,res) => {
         user.remove();
         res.json({msg:'deleted user'});
     }else{
-        res.status(404).json({msg:'delete fail'});
+        // res.status(404).json({msg:'delete fail'});
+        res.status(404);
+        throw new Error('delete fail');
     }
 }))
 
@@ -101,7 +126,9 @@ router.put('/modify', protect, asyncHandler(async(req, res) => {
         const updatedUser = await user.save();
         res.json({msg:'updated user'});
     }else{
-        res.status(404).json('user not found');
+        // res.status(404).json('user not found');
+        res.status(404);
+        throw new Error('user not found');
     }
 }))
 

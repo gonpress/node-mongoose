@@ -3,13 +3,20 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import orderModel from "../models/orderModel.js";
+import {protect, admin} from "../middleware/authMiddleware.js";
+import userModel from "../models/userModel.js";
 
 const router = express.Router();
 
 // 3
 // CRUD
-router.get('/', asyncHandler(async(req,res)=> {
-    const orders = await orderModel.find().populate('product');
+router.get('/', protect, admin, asyncHandler(async(req,res)=> {
+    const orders = await orderModel
+        .find()
+        .populate('product')
+        .populate('user');
+
+    console.log(orders);
 
     if(orders){
         res.json(orders);
@@ -20,12 +27,27 @@ router.get('/', asyncHandler(async(req,res)=> {
     }
 }))
 
-router.get('/:id', asyncHandler(async(req, res) => {
+router.get('/:id', protect, asyncHandler(async(req, res) => {
     const id = req.params.id;
-    console.log(id);
-    const order = await orderModel.findById(id).populate('product', 'id name price');
+
+    const user = await userModel.findById(req.user._id);
+    if(!user){
+        return res.status(404).json({
+            msg:'user 없음',
+        })
+    }
+
+    const order = await orderModel
+        .findById(id)
+        .populate('product', 'id name price')
+        .populate('user');
+
+    // TODO
+    // 로그인한 사용자가 주문한것만 보이게 하기
+    console.log(order.user._id);
 
     if(order){
+
         res.json(order);
     }else{
         res.status(404).json({
@@ -35,7 +57,7 @@ router.get('/:id', asyncHandler(async(req, res) => {
 }))
 
 // 주문하기 등록
-router.post('/', asyncHandler(async(req,res)=> {
+router.post('/', protect, asyncHandler(async(req,res)=> {
     const {
         // orderItems,
         product,
@@ -47,6 +69,7 @@ router.post('/', asyncHandler(async(req,res)=> {
         shippingPrice,
         totalPrice,
     } = req.body;
+
 
     // console.log(orderItems.length);
     //
@@ -66,6 +89,7 @@ router.post('/', asyncHandler(async(req,res)=> {
         taxPrice,
         shippingPrice,
         totalPrice,
+        user:req.user._id,
     })
 
     const createdOrder = await order.save();
@@ -74,7 +98,7 @@ router.post('/', asyncHandler(async(req,res)=> {
 }))
 
 // order 수정
-router.put('/:id', asyncHandler(async(req,res)=>{
+router.put('/:id', protect, asyncHandler(async(req,res)=>{
     const id = req.params.id;
     const {
         product,
@@ -108,7 +132,7 @@ router.put('/:id', asyncHandler(async(req,res)=>{
 }))
 
 // order 삭제
-router.delete('/:id', asyncHandler(async(req,res)=>{
+router.delete('/:id', protect, asyncHandler(async(req,res)=>{
     const id = req.params.id;
 
     const order = await orderModel.findById(id);
@@ -122,7 +146,7 @@ router.delete('/:id', asyncHandler(async(req,res)=>{
 
 }))
 
-router.delete('/', asyncHandler(async(req,res)=> {
+router.delete('/', protect, admin, asyncHandler(async(req,res)=> {
     const deletedOrders = await orderModel.deleteMany({});
     if(deletedOrders)
     {
