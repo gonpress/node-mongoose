@@ -7,6 +7,7 @@ import {
     modifyProductById,
     deleteProducts, deleteProductById
 } from "../controllers/productController.js";
+import {uploadSingle} from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get('/', getProducts);
 router.get('/:id', protect, getProductById)
 
 // Product를 등록하는 API
-router.post('/', protect, admin, createProduct);
+router.post('/', protect, admin, uploadSingle.single('image'), createProduct);
 
 // Product를 수정하는 API
 router.put('/:id', protect, admin, modifyProductById);

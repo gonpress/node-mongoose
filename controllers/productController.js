@@ -38,12 +38,14 @@ const getProductById = asyncHandler( async (req, res) => {
 const createProduct = asyncHandler( async (req, res) => {
     const {name, price, brand, description} = req.body;
     // const imageNumber = Math.floor(Math.random() * (500 - 1) + 1);
+    console.log(req.file);
+
     const newProduct = new productModel({
         name,
         price,
         brand,
         desc:description,
-        // img:`https://picsum.photos/200/200/?image=${imageNumber}`,
+        image:req.file.path,
     });
 
     const createdProduct = await newProduct.save();

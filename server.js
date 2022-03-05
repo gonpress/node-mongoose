@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import cors from 'cors';
 import {notFound, errorHandler} from "./middleware/errorMiddleware.js";
 import * as path from "path";
+import cookieParser from 'cookie-parser';
 
 // Router
 import productRoutes from "./routes/productRoutes.js";
@@ -25,7 +26,11 @@ connectDB();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors('localhost'));
+app.use(cors({
+    origin:true,
+    credentials:true,
+}));
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
     res.send("api running");
@@ -34,7 +39,6 @@ app.get("/", (req, res) => {
 app.use('/products', productRoutes);
 app.use('/order', orderRoutes);
 app.use('/user', userRoutes);
-app.use('/upload', uploadRoutes);
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));

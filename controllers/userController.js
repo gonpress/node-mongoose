@@ -47,8 +47,10 @@ const loginUser = asyncHandler(async(req, res) => {
     // email 유무 체크
     const user = await userModel.findOne({email});
     if(user && (await user.matchPassword(password))){
+        const token = generateToken(user._id);
+        res.cookie('jwt', token);
         res.json({
-            token: generateToken(user._id)
+            token,
         });
     }else{
         res.status(401);
