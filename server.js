@@ -5,10 +5,13 @@ import bodyParser from "body-parser";
 import connectDB from "./config/db.js";
 import cors from 'cors';
 import {notFound, errorHandler} from "./middleware/errorMiddleware.js";
+import * as path from "path";
+
 // Router
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 // ES5 문법
 // const express = require("express")
@@ -31,6 +34,10 @@ app.get("/", (req, res) => {
 app.use('/products', productRoutes);
 app.use('/order', orderRoutes);
 app.use('/user', userRoutes);
+app.use('/upload', uploadRoutes);
+
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // error handler
 app.use(notFound);
