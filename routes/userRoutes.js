@@ -76,4 +76,33 @@ router.get('/profile', protect, asyncHandler(async(req, res) => {
     }
 }))
 
+// 내 id 맞는지 확인하고 삭제
+router.delete('/delete', protect, asyncHandler(async(req,res) => {
+    const user = await userModel.findById(req.user._id);
+
+    if(user){
+        user.remove();
+        res.json({msg:'deleted user'});
+    }else{
+        res.status(404).json({msg:'delete fail'});
+    }
+}))
+
+// 내 profile 수정
+router.put('/modify', protect, asyncHandler(async(req, res) => {
+    const {name, email, password} = req.body;
+    const user = await userModel.findById(req.user._id);
+
+    if(user){
+        user.name = name || user.name;
+        user.email = email || user.email;
+        user.password = password || user.password;
+
+        const updatedUser = await user.save();
+        res.json({msg:'updated user'});
+    }else{
+        res.status(404).json('user not found');
+    }
+}))
+
 export default router;
