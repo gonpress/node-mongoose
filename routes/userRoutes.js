@@ -1,135 +1,33 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
-import userModel from "../models/userModel.js";
 import {protect, admin} from "../middleware/authMiddleware.js";
 
-import generateToken from "../utils/generateToken.js";
-
+import {
+    authUser,
+    deleteUser,
+    loginUser,
+    modifyProfileUser,
+    profileUser,
+    registerUser
+} from "../controllers/userController.js";
 
 const router = express.Router();
 
-
-router.get('/', protect, admin, asyncHandler(async(req, res)=>{
-    const users = await userModel.find();
-
-    if(!users){
-        res.status(401);
-        throw new Error('User not found');
-    }
-
-    res.json({
-        count:users.length,
-        users,
-    })
-
-    // if(users){
-    //     res.json({
-    //         count:users.length,
-    //         users,
-    //     })
-    // } else{
-    //     res.status(404).json({msg:'user not found'});
-    // }
-}))
+// 전체 User 불러오기 API
+router.get('/', protect, admin, authUser)
 
 // 회원가입 API
-router.post('/register', asyncHandler(async(req, res)=> {
-    const {name, email, password} = req.body;
-    const userExists = await userModel.findOne({email})
-    if(userExists) {
-        // return res.status(404).json({
-        //     msg:'User already exists',
-        // })
-        res.status(400)
-        throw new Error('User already exists');
-    }
-
-    const user = await new userModel.create({
-        name,
-        email,
-        password,
-    });
-
-    if(user){
-        res.json(user);
-    } else{
-        res.status(400)
-        throw new Error('Invalid user data');
-    }
-
-    // const createdUser = await user.save();
-    // res.json({
-    //     msg:'유저 생성 완료',
-    //     userInfo:createdUser,
-    // })
-}))
+router.post('/register', registerUser)
 
 // 로그인 API
-router.post('/login', asyncHandler(async(req, res) => {
-    const {email, password} = req.body;
+router.post('/login', loginUser)
 
-    // email 유무 체크
-    const user = await userModel.findOne({email});
-    if(user && (await user.matchPassword(password))){
-        res.json({
-            token: generateToken(user._id)
-        });
-    }else{
-        // res.status(404).json({
-        //     msg:'Invalid email or password'
-        // })
-        res.status(401);
-        throw new Error('Invalid email or password');
-    }
-}))
-
-router.get('/profile', protect, asyncHandler(async(req, res) => {
-    const user = await userModel.findById(req.user._id);
-
-    if(user){
-        res.json({
-            id:user._id,
-            email:user.email,
-            name:user.name,
-        });
-    }else{
-        // res.status(404).json({msg:'User not found'});
-        res.status(404);
-        throw new Error('User not found');
-    }
-}))
+// profile 불러오기 API
+router.get('/profile', protect, profileUser)
 
 // 내 id 맞는지 확인하고 삭제
-router.delete('/delete', protect, asyncHandler(async(req,res) => {
-    const user = await userModel.findById(req.user._id);
-
-    if(user){
-        user.remove();
-        res.json({msg:'deleted user'});
-    }else{
-        // res.status(404).json({msg:'delete fail'});
-        res.status(404);
-        throw new Error('delete fail');
-    }
-}))
+router.delete('/delete', protect, deleteUser)
 
 // 내 profile 수정
-router.put('/modify', protect, asyncHandler(async(req, res) => {
-    const {name, email, password} = req.body;
-    const user = await userModel.findById(req.user._id);
-
-    if(user){
-        user.name = name || user.name;
-        user.email = email || user.email;
-        user.password = password || user.password;
-
-        const updatedUser = await user.save();
-        res.json({msg:'updated user'});
-    }else{
-        // res.status(404).json('user not found');
-        res.status(404);
-        throw new Error('user not found');
-    }
-}))
+router.put('/modify', protect, modifyProfileUser)
 
 export default router;
