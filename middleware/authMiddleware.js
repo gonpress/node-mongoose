@@ -27,7 +27,13 @@ const protect = asyncHandler( async(req, res, next) => {
             })
         }
     }
+    else{
+        res.status(401).json({
+            msg:'not authorization',
+        });
+    }
 })
+
 
 const admin = (req, res, next) => {
     if(req.user && req.user.isAdmin){

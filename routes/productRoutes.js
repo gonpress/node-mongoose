@@ -18,7 +18,8 @@ router.get('/', getProducts);
 router.get('/:id', protect, getProductById)
 
 // Product를 등록하는 API
-router.post('/', protect, admin, uploadSingle.single('image'), createProduct);
+// router.post('/', protect, admin, uploadSingle.single('image'), createProduct);
+router.post('/', protect, admin, createProduct);
 
 // Product를 수정하는 API
 router.put('/:id', protect, admin, modifyProductById);

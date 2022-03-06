@@ -16,8 +16,9 @@ const authUser = asyncHandler(async(req, res) => {
     })
 })
 
-const registerUser = asyncHandler(async(req, res)=> {
+const registerUser = asyncHandler(async (req, res) => {
     const {name, email, password} = req.body;
+
     const userExists = await userModel.findOne({email})
     if(userExists) {
         // return res.status(404).json({
@@ -26,18 +27,23 @@ const registerUser = asyncHandler(async(req, res)=> {
         res.status(400)
         throw new Error('User already exists');
     }
+    console.log(password);
+    try{
+        const user = new userModel({
+            name,
+            email,
+            password,
+        });
 
-    const user = await new userModel.create({
-        name,
-        email,
-        password,
-    });
-
-    if(user){
-        res.json(user);
-    } else{
-        res.status(400)
-        throw new Error('Invalid user data');
+        if(user){
+            const createdUser = await user.save();
+            res.json(user);
+        } else{
+            res.status(400)
+            throw new Error('Invalid user data');
+        }
+    } catch (e) {
+        console.log(e);
     }
 })
 
@@ -48,8 +54,13 @@ const loginUser = asyncHandler(async(req, res) => {
     const user = await userModel.findOne({email});
     if(user && (await user.matchPassword(password))){
         const token = generateToken(user._id);
-        res.cookie('jwt', token);
+        // res.cookie('user', token, {
+        //     httpOnly:false,
+        //     maxAge: 24 * 60 * 60 * 1000,
+        // });
         res.json({
+            email:user.email,
+            name:user.name,
             token,
         });
     }else{

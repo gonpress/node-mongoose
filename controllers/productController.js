@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import productModel from "../models/productModel.js";
 
 const getProducts = asyncHandler( async (req,res) => {
+
     const products = await productModel.find();
     res.json({
         count: products.length,
@@ -11,7 +12,7 @@ const getProducts = asyncHandler( async (req,res) => {
                 name: product.name,
                 price: product.price.toLocaleString(),
                 brand: product.brand,
-                // img:product.img,
+                img:product.img,
                 desc: product.desc,
                 countInStock:product.countInStock,
             }
@@ -37,16 +38,18 @@ const getProductById = asyncHandler( async (req, res) => {
 
 const createProduct = asyncHandler( async (req, res) => {
     const {name, price, brand, description} = req.body;
-    // const imageNumber = Math.floor(Math.random() * (500 - 1) + 1);
-    console.log(req.file);
+    const imageNumber = Math.floor(Math.random() * (500 - 1) + 1);
 
     const newProduct = new productModel({
         name,
         price,
         brand,
         desc:description,
-        image:req.file.path,
+        // image:req.file.path || null,
+        img:`https://picsum.photos/200/200/?image=${imageNumber}`,
     });
+
+    console.log(newProduct);
 
     const createdProduct = await newProduct.save();
 
@@ -56,14 +59,14 @@ const createProduct = asyncHandler( async (req, res) => {
 const modifyProductById = asyncHandler(async (req, res) => {
     const {id} = req.params;
 
-    const {name, price, brand, desc} = req.body;
+    const {name, price, brand, description} = req.body;
 
     const product = await productModel.findById(id);
     if(product){
         product.name = name;
         product.price = price;
         product.brand = brand;
-        product.desc = desc;
+        product.desc = description;
 
         const updatedProduct = await product.save();
         res.json({
