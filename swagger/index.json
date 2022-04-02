@@ -1,0 +1,258 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "my api",
+    "description": "my api 입니다",
+    "version":"1.0.0"
+  },
+  "externalDocs": {
+    "description": "Developer Github",
+    "url": "naver.com"
+  },
+  "components": {
+    "securitySchemes":{
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Operations about user"
+    },
+    {
+      "name": "Product",
+      "description": "Operations about product"
+    },
+    {
+      "name": "Cart",
+      "description": "Operations about cart"
+    },
+    {
+      "name": "Checkout",
+      "description": "Operations about checkout"
+    }
+  ],
+  "paths":{
+    "/auth/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register User",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "$ref": "#/definitions/Users"
+                },
+                "example": {
+                  "name": "gonpress",
+                  "email": "gonpress@naver.com",
+                  "password":"1234"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "newUserCreated": {
+                      "type": "object"
+                    }
+                  },
+                  "example": {
+                    "name": "정보2",
+                    "email": "11@naver.com",
+                    "_id": "623da69e1ca8ae6ba578c698",
+                    "createdAt": "2022-03-25T11:25:18.568Z",
+                    "updatedAt": "2022-03-25T11:25:18.568Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bad Request - invalid email/password/name or User already registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login User",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "$ref": "#/definitions/Users"
+                },
+                "example": {
+                  "email": "gonpress@naver.com",
+                  "password":"1234"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "newUserCreated": {
+                      "type": "object"
+                    }
+                  },
+                  "example": {
+                    "_id": "623da75d2d83ac13ca46f349",
+                    "name": "bkbkbk",
+                    "email": "bkbkbkbk@naver.com",
+                    "createdAt": "2022-03-25T11:28:29.597Z",
+                    "updatedAt": "2022-03-25T11:28:29.597Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request - invalid email/password/name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Wrong credentials provided",
+                    "status": 401
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get User Profile",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "$ref": "#/definitions/Users"
+                },
+                "example": {
+                  "email": "gonpress@naver.com",
+                  "password":"1234"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "newUserCreated": {
+                      "type": "object"
+                    }
+                  },
+                  "example": {
+                    "_id": "623da75d2d83ac13ca46f349",
+                    "name": "bkbkbk",
+                    "email": "bkbkbkbk@naver.com",
+                    "createdAt": "2022-03-25T11:28:29.597Z",
+                    "updatedAt": "2022-03-25T11:28:29.597Z",
+                    "__v": 0
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request - invalid email/password/name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Wrong credentials provided",
+                    "status": 401
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

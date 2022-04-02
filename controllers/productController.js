@@ -2,21 +2,28 @@ import asyncHandler from "express-async-handler";
 import productModel from "../models/productModel.js";
 
 const getProducts = asyncHandler( async (req,res) => {
+    const pageSize = 2;
+    const page = Number(req.query.pageNumber) || 1
 
-    const products = await productModel.find();
-    res.json({
-        count: products.length,
-        products: products.map(product => (
-            {
-                id: product._id,
-                name: product.name,
-                price: product.price.toLocaleString(),
-                brand: product.brand,
-                img:product.img,
-                desc: product.desc,
-                countInStock:product.countInStock,
+    const keyword = req.query.keyword
+        ? {
+            name: {
+                $regex: req.query.keyword,
+                $options: 'i',
             }
-        ))
+        } : {}
+
+    const count = await productModel.countDocuments({...keyword})
+
+    const products = await productModel.find({...keyword})
+        .limit(pageSize)
+        .skip(pageSize * (page - 1))
+
+    res.json({
+        count,
+        page,
+        pages: Math.ceil(count / pageSize),
+        products
     });
 })
 

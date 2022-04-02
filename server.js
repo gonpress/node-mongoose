@@ -7,6 +7,8 @@ import cors from 'cors';
 import {notFound, errorHandler} from "./middleware/errorMiddleware.js";
 import * as path from "path";
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
+// const swaggerJSON = require('./swagger/index.json')
 
 // Router
 import productRoutes from "./routes/productRoutes.js";
@@ -36,6 +38,7 @@ app.get("/", (req, res) => {
     res.send("api running");
 })
 
+// app.use('/api-docs', swaggerUi.server, swaggerUi.setup(swaggerJSON));
 app.use('/products', productRoutes);
 app.use('/order', orderRoutes);
 app.use('/user', userRoutes);
